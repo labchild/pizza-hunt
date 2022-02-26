@@ -7,22 +7,41 @@ const { Schema, model } = require('mongoose');
 // timestamp pizza updated at
 // suggested pizza size
 // pizza toppings
-const PizzaSchema = new Schema({
-    pizzaName: {
-        type: String
+const PizzaSchema = new Schema(
+    // field definitions
+    {
+        pizzaName: {
+            type: String
+        },
+        createdBy: {
+            type: String
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        size: {
+            type: String,
+            default: 'Large'
+        },
+        toppings: [],
+        comments: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Comment'
+            }
+        ]
     },
-    createdBy: {
-        type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    size: {
-        type: String,
-        default: 'Large'
-    },
-    toppings: []
+    // options
+    {
+        toJSON: {
+            virtuals: true
+        },
+        id: false
+    });
+
+PizzaSchema.virtual('commentCount').get(function () {
+    return this.comments.length;
 });
 
 // create pizza model using PizzaSchema
