@@ -42,6 +42,21 @@ const commentController = {
                 res.json(dbPizzaData);
             })
             .catch(err => res.json(err));
+    },
+    addReply({ body, params }, res) {
+        Comment.findOneAndUpdate(
+            { _id: params.commentId },
+            { $push: { replies: body } },
+            { new: true }
+        )
+            .then(dbCommentData => {
+                if (!dbCommentData) {
+                    res.status(404).json({ message: 'No post with this id' });
+                    return;
+                }
+                res.json(dbCommentData)
+            })
+
     }
 };
 
